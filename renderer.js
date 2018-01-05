@@ -9,5 +9,10 @@ export default function (virtualDom) {
     }
   }
 
-  return `<${virtualDom.type}${attributeString.trimRight()}></${virtualDom.type}>`
+  let content = ""
+  if(virtualDom.children) {
+    content = virtualDom.children[0]
+  }
+
+  return `<${virtualDom.type}${attributeString.trimRight()}>${content}</${virtualDom.type}>`
 }
