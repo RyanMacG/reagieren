@@ -1,17 +1,48 @@
 import renderer from '../renderer'
 
-test('given a virtual DOM with an empty div element', () => {
-  expect(
-    renderer({
-      type: 'div'
-    })
-  ).toBe('<div></div>')
-});
+describe('Rendering virtualDom', () => {
 
-test('given a virtual DOM with an empty span element', () => {
-  expect(
-    renderer({
-      type: 'span'
-    })
-  ).toBe('<span></span>')
+  function expectRenders(expected, virtualDom) {
+    expect(renderer(virtualDom)).toBe(expected)
+  }
+
+  describe('given an empty element', () => {
+    test('renders an empty div element', () => {
+      expectRenders('<div></div>', { type: 'div' })
+    });
+
+    test('renders an empty span element', () => {
+      expectRenders('<span></span>', { type: 'span' })
+    });
+  })
+
+  describe('given attributes', () => {
+    test('renders a div with an id of foo', () => {
+      expectRenders(
+        '<div id="foo"></div>', 
+        { type: 'div', props: { id: 'foo' } }
+      )
+    });
+
+    test('renders a div with an id of bar', () => {
+      expectRenders(
+        '<div id="bar"></div>', 
+        { type: 'div', props: { id: 'bar' } }
+      )
+    });
+
+    test('renders a div with a title of qux', () => {
+      expectRenders(
+        '<div title="qux"></div>', 
+        { type: 'div', props: { title: 'qux' } }
+      )
+    });
+
+    test('renders a div with multiple attributes', () => {
+      expectRenders(
+        '<div title="qux" id="afh"></div>', 
+        { type: 'div', props: { title: 'qux', id: 'afh' } }
+      )
+    });
+  })
 });
