@@ -1,4 +1,4 @@
-export default function (virtualDom) {
+export default function renderer (virtualDom) {
   let attributeString = " "
   if(virtualDom.props) {
     const keys = Object.keys(virtualDom.props)
@@ -10,8 +10,14 @@ export default function (virtualDom) {
   }
 
   let content = ""
-  if(virtualDom.children) {
-    content = virtualDom.children[0]
+  for(var i in virtualDom.children) {
+    const child = virtualDom.children[i]
+
+    if(typeof child === 'object') {
+      content += renderer(child)
+    } else {
+      content += child
+    }
   }
 
   return `<${virtualDom.type}${attributeString.trimRight()}>${content}</${virtualDom.type}>`
