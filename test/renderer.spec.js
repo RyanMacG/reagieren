@@ -1,46 +1,42 @@
+import Reagieren from '../reagieren'
 import renderer from '../renderer'
 
 describe('Rendering virtualDom', () => {
 
   function expectRenders(expected, virtualDom) {
-    expect(renderer(virtualDom)).toBe(expected)
+    const presenter = jest.fn()
+    Reagieren.render(virtualDom, presenter)
+    expect(presenter).toBeCalledWith(expected)
   }
 
   describe('given an empty element', () => {
     test('renders an empty div element', () => {
-      expectRenders('<div></div>', { type: 'div' })
+      expectRenders('<div></div>', <div></div>)
     });
 
     test('renders an empty span element', () => {
-      expectRenders('<span></span>', { type: 'span' })
+      expectRenders('<span></span>', <span></span>)
     });
 
     describe('given attributes', () => {
       test('renders a div with an id of foo', () => {
         expectRenders(
           '<div id="foo"></div>', 
-          { type: 'div', props: { id: 'foo' } }
-        )
-      });
-
-      test('renders a div with an id of bar', () => {
-        expectRenders(
-          '<div id="bar"></div>', 
-          { type: 'div', props: { id: 'bar' } }
+          <div id="foo"></div>
         )
       });
 
       test('renders a div with a title of qux', () => {
         expectRenders(
           '<div title="qux"></div>', 
-          { type: 'div', props: { title: 'qux' } }
+          <div title="qux"></div>
         )
       });
 
       test('renders a div with multiple attributes', () => {
         expectRenders(
           '<div title="qux" id="afh"></div>', 
-          { type: 'div', props: { title: 'qux', id: 'afh' } }
+          <div title="qux" id="afh"></div>
         )
       });
     })
@@ -50,16 +46,32 @@ describe('Rendering virtualDom', () => {
     test("renders a p with Hello World text content", () => {
       expectRenders(
         '<p>Hello World</p>',
-        { type: 'p', children: ['Hello World'] }
+        <p>Hello World</p>
       )
     })
 
     test("renders a p with Foo Bar text content", () => {
       expectRenders(
         '<p>Foo Bar</p>',
-        { type: 'p', children: ['Foo Bar'] }
+        <p>Foo Bar</p>
       )
     })
+
+    test("renders a div with a child span", () => {
+      expectRenders(
+        '<div><span>Foo Bar</span></div>',
+        <div><span>Foo Bar</span></div>
+      )
+    })
+
+    test("renders a div multiple child elements", () => {
+      expectRenders(
+        '<div><span>Foo <i>Bar</i></span></div>',
+        <div><span>Foo <i>Bar</i></span></div>
+      )
+    })
+
+    // test for adjacent elements
   })
 });
 
