@@ -13,5 +13,8 @@
   },
   "scripts": {
     "test": "jest"
+  },
+  "devDependencies": {
+    "eslint": "^4.16.0"
   }
 }

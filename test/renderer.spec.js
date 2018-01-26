@@ -64,14 +64,26 @@ describe('Rendering virtualDom', () => {
       )
     })
 
-    test("renders a div multiple child elements", () => {
+    test("renders a div with multiple child elements", () => {
       expectRenders(
         '<div><span>Foo <i>Bar</i></span></div>',
         <div><span>Foo <i>Bar</i></span></div>
       )
     })
 
-    // test for adjacent elements
+    test("renders a div with adjacent elements", () => {
+      expectRenders(
+        '<div><span>Foo</span><span>Bar</span></div>',
+        <div><span>Foo</span><span>Bar</span></div>
+      )
+    })
+
+    test("renders a div with adjacent elements with children", () => {
+      expectRenders(
+        '<div><span>Foo</span><span><i>Bar</i></span></div>',
+        <div><span>Foo</span><span><i>Bar</i></span></div>
+      )
+    })
   })
 });
 
