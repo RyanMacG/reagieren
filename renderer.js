@@ -3,13 +3,17 @@ export default function renderer (virtualDom) {
     return renderArrayOfVirtualDomElements(virtualDom)
   }
 
-  if(typeof virtualDom.type === "function") {
+  if(isComponent(virtualDom.type)) {
     return renderer(virtualDom.type({children: virtualDom.children}))
   }
 
   let children = renderArrayOfVirtualDomElements(virtualDom.children)
 
   return renderDomTag(virtualDom.type, virtualDom.props, children)
+}
+
+function isComponent(type) {
+  return typeof type === "function"
 }
 
 function renderArrayOfVirtualDomElements(array) {
