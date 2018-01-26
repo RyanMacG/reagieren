@@ -1,4 +1,25 @@
+function renderArrayOfVirtualDomElements(array) {
+    let elements = ""
+    for(var i in array) {
+      const innerElement = array[i]
+      if(typeof innerElement === 'object') {
+        elements += renderer(innerElement)
+      } else {
+        elements += innerElement
+      }
+    }
+    return elements
+}
+
 export default function renderer (virtualDom) {
+  if(Array.isArray(virtualDom)) {
+    return renderArrayOfVirtualDomElements(virtualDom)
+  }
+
+  if(typeof virtualDom.type === "function") {
+    return renderer(virtualDom.type({children: virtualDom.children}))
+  }
+
   let attributeString = " "
   if(virtualDom.props) {
     const keys = Object.keys(virtualDom.props)
@@ -9,16 +30,7 @@ export default function renderer (virtualDom) {
     }
   }
 
-  let content = ""
-  for(var i in virtualDom.children) {
-    const child = virtualDom.children[i]
-
-    if(typeof child === 'object') {
-      content += renderer(child)
-    } else {
-      content += child
-    }
-  }
+  let content = renderArrayOfVirtualDomElements(virtualDom.children)
 
   return `<${virtualDom.type}${attributeString.trimRight()}>${content}</${virtualDom.type}>`
 }

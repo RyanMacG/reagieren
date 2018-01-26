@@ -85,5 +85,59 @@ describe('Rendering virtualDom', () => {
       )
     })
   })
+
+  describe("given a component", () => {
+    test("can render a simple component", () => {
+      const MyComponent = () => <div></div>
+      expectRenders(
+        '<div></div>',
+        <MyComponent />
+      )
+    })
+
+    test("can render a simple component with different elements", () => {
+      const MyComponent = () => <span></span>
+      expectRenders(
+        '<span></span>',
+        <MyComponent />
+      )
+    })
+
+    test("can render components that contain other components", () => {
+      const MyComponent = () => <div></div>
+      const MySecondComponent = () => <span><MyComponent /></span>
+      expectRenders(
+        '<span><div></div></span>',
+        <MySecondComponent />
+      )
+    })
+
+    test("can render nested components", () => {
+      const MyComponent = ({children}) => <div>{children}</div>
+      const MySecondComponent = () => <span></span>
+      expectRenders(
+        '<div><span></span></div>',
+        <MyComponent><MySecondComponent /></MyComponent>
+      )
+    })
+
+    test("can render multiple nested components", () => {
+      const MyComponent = ({children}) => <div>{children}</div>
+      const MySecondComponent = () => <span></span>
+      expectRenders(
+        '<div><span></span><span></span></div>',
+        <MyComponent><MySecondComponent /><MySecondComponent /></MyComponent>
+      )
+    })
+
+    test("can render multiple nested components and elements", () => {
+      const MyComponent = ({children}) => <div>{children}</div>
+      const MySecondComponent = () => <span></span>
+      expectRenders(
+        '<div><span></span><span></span>hello</div>',
+        <MyComponent><MySecondComponent /><MySecondComponent />hello</MyComponent>
+      )
+    })
+  })
 });
 
