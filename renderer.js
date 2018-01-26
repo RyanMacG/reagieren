@@ -1,3 +1,17 @@
+export default function renderer (virtualDom) {
+  if(Array.isArray(virtualDom)) {
+    return renderArrayOfVirtualDomElements(virtualDom)
+  }
+
+  if(typeof virtualDom.type === "function") {
+    return renderer(virtualDom.type({children: virtualDom.children}))
+  }
+
+  let children = renderArrayOfVirtualDomElements(virtualDom.children)
+
+  return renderDomTag(virtualDom.type, virtualDom.props, children)
+}
+
 function renderArrayOfVirtualDomElements(array) {
     let elements = ""
     for(var i in array) {
@@ -11,26 +25,19 @@ function renderArrayOfVirtualDomElements(array) {
     return elements
 }
 
-export default function renderer (virtualDom) {
-  if(Array.isArray(virtualDom)) {
-    return renderArrayOfVirtualDomElements(virtualDom)
-  }
+function renderDomTag(type, props, children) {
+  return `<${type}${renderDomTagAttributes(props)}>${children}</${type}>`
+}
 
-  if(typeof virtualDom.type === "function") {
-    return renderer(virtualDom.type({children: virtualDom.children}))
-  }
-
+function renderDomTagAttributes(props) {
   let attributeString = " "
-  if(virtualDom.props) {
-    const keys = Object.keys(virtualDom.props)
+  if(props) {
+    const keys = Object.keys(props)
     for(var i in keys) {
       const key = keys[i]
-      const value = virtualDom.props[key]
+      const value = props[key]
       attributeString += `${key}="${value}" `
     }
   }
-
-  let content = renderArrayOfVirtualDomElements(virtualDom.children)
-
-  return `<${virtualDom.type}${attributeString.trimRight()}>${content}</${virtualDom.type}>`
+  return attributeString.trimRight()
 }
