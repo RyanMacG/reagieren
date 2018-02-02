@@ -1,13 +1,18 @@
-export default function renderer (virtualDom) {
+export default function renderer (virtualDom, stateCreator) {
   if(Array.isArray(virtualDom)) {
-    return renderArrayOfVirtualDomElements(virtualDom)
+    return renderArrayOfVirtualDomElements(virtualDom, stateCreator)
   }
 
   if(isComponent(virtualDom.type)) {
-    return renderer(virtualDom.type({children: virtualDom.children}))
+    const props = {children: virtualDom.children, ...virtualDom.props}
+
+    if(virtualDom.state == undefined) {
+      virtualDom.state = stateCreator.newState()
+    }
+    return renderer(virtualDom.type(props, virtualDom.state), stateCreator)
   }
 
-  let children = renderArrayOfVirtualDomElements(virtualDom.children)
+  let children = renderArrayOfVirtualDomElements(virtualDom.children, stateCreator)
 
   return renderDomTag(virtualDom.type, virtualDom.props, children)
 }
@@ -16,17 +21,17 @@ function isComponent(type) {
   return typeof type === "function"
 }
 
-function renderArrayOfVirtualDomElements(array) {
-    let elements = ""
-    for(var i in array) {
-      const innerElement = array[i]
-      if(typeof innerElement === 'object') {
-        elements += renderer(innerElement)
-      } else {
-        elements += innerElement
-      }
+function renderArrayOfVirtualDomElements(array, stateCreator) {
+  let elements = ""
+  for(var i in array) {
+    const innerElement = array[i]
+    if(typeof innerElement === 'object') {
+      elements += renderer(innerElement, stateCreator)
+    } else {
+      elements += innerElement
     }
-    return elements
+  }
+  return elements
 }
 
 function renderDomTag(type, props, children) {

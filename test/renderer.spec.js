@@ -139,5 +139,106 @@ describe('Rendering virtualDom', () => {
       )
     })
   })
-});
 
+  describe("given components with props", () => {
+    test("can render a simple string prop", () => {
+      const NameBadge = (props) => <div>{props.name}</div>
+      expectRenders(
+        '<div>Ryan</div>',
+        <NameBadge name="Ryan" />
+      )
+    })
+
+    test("can render a simple string props with multiple values", () => {
+      const NameBadge = (props) => <div>{props.name} ({props.age})</div>
+      expectRenders(
+        '<div>Craig (101)</div>',
+        <NameBadge name="Craig" age="101" />
+      )
+    })
+  })
+
+  describe("given components with state", () => {
+    test("default the state to undefined", () => {
+      let the_state = null
+      const NameBadge = (props, state) => {
+        the_state = state
+
+        return <div>{props.name} ({state.age})</div>
+      }
+
+      const presenter = jest.fn()
+      Reagieren.render(<NameBadge name="Ryan" />, presenter)
+
+      expect(presenter).toBeCalledWith('<div>Ryan (undefined)</div>')
+    })
+
+    test("set the state", () => {
+      let the_state = null
+      const NameBadge = (props, state) => {
+        the_state = state
+
+        return <div>{props.name} ({state.age})</div>
+      }
+
+
+      const presenter = jest.fn()
+      Reagieren.render(<NameBadge name="Ryan" />, presenter)
+      expect(presenter).toBeCalledWith('<div>Ryan (undefined)</div>')
+      the_state.set({age: 101})
+      expect(presenter).toBeCalledWith('<div>Ryan (101)</div>')
+    })
+
+    test("update the state", () => {
+      let the_state = null
+      const NameBadge = (props, state) => {
+        the_state = state
+
+        return <div>{props.name} ({state.age})</div>
+      }
+
+
+      const presenter = jest.fn()
+      Reagieren.render(<NameBadge name="Ryan" />, presenter)
+      expect(presenter).toBeCalledWith('<div>Ryan (undefined)</div>')
+      the_state.set({age: 101})
+      expect(presenter).toBeCalledWith('<div>Ryan (101)</div>')
+      the_state.set({age: 4})
+      expect(presenter).toBeCalledWith('<div>Ryan (4)</div>')
+    })
+
+    test("set different parts of the state", () => {
+      let the_state = null
+      const NameBadge = (_, state) => {
+        the_state = state
+
+        return <div>{state.name}</div>
+      }
+
+
+      const presenter = jest.fn()
+      Reagieren.render(<NameBadge />, presenter)
+      expect(presenter).toBeCalledWith('<div>undefined</div>')
+      the_state.set({name: 'Ryan'})
+      expect(presenter).toBeCalledWith('<div>Ryan</div>')
+    })
+
+    test("update different parts of the state", () => {
+      let the_state = null
+      const NameBadge = (_, state) => {
+        the_state = state
+
+        return <div>{state.name}</div>
+      }
+
+
+      const presenter = jest.fn()
+      Reagieren.render(<NameBadge />, presenter)
+      expect(presenter).toBeCalledWith('<div>undefined</div>')
+      the_state.set({name: 'Ryan'})
+      expect(presenter).toBeCalledWith('<div>Ryan</div>')
+      the_state.set({name: 'Craig'})
+      expect(presenter).toBeCalledWith('<div>Craig</div>')
+    })
+  })
+});
