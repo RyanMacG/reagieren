@@ -181,7 +181,6 @@ describe('Rendering virtualDom', () => {
         return <div>{props.name} ({state.age})</div>
       }
 
-
       const presenter = jest.fn()
       Reagieren.render(<NameBadge name="Ryan" />, presenter)
       expect(presenter).toBeCalledWith('<div>Ryan (undefined)</div>')
@@ -196,7 +195,6 @@ describe('Rendering virtualDom', () => {
 
         return <div>{props.name} ({state.age})</div>
       }
-
 
       const presenter = jest.fn()
       Reagieren.render(<NameBadge name="Ryan" />, presenter)
@@ -215,7 +213,6 @@ describe('Rendering virtualDom', () => {
         return <div>{state.name}</div>
       }
 
-
       const presenter = jest.fn()
       Reagieren.render(<NameBadge />, presenter)
       expect(presenter).toBeCalledWith('<div>undefined</div>')
@@ -230,7 +227,6 @@ describe('Rendering virtualDom', () => {
 
         return <div>{state.name}</div>
       }
-
 
       const presenter = jest.fn()
       Reagieren.render(<NameBadge />, presenter)
